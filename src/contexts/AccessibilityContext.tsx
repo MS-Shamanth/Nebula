@@ -1,0 +1,116 @@
+import React, { createContext, useContext, useState, useEffect } from "react";
+
+export type ThemeMode = "default" | "high-contrast" | "dyslexia";
+export type Language = "en" | "es" | "fr" | "de";
+
+interface AccessibilitySettings {
+  themeMode: ThemeMode;
+  language: Language;
+  fontSize: number;
+  screenReaderMode: boolean;
+  reducedMotion: boolean;
+  emotionColorTheme: boolean;
+}
+
+interface AccessibilityContextType {
+  settings: AccessibilitySettings;
+  updateThemeMode: (mode: ThemeMode) => void;
+  updateLanguage: (lang: Language) => void;
+  updateFontSize: (size: number) => void;
+  toggleScreenReaderMode: () => void;
+  toggleReducedMotion: () => void;
+  toggleEmotionColorTheme: () => void;
+  resetSettings: () => void;
+}
+
+const defaultSettings: AccessibilitySettings = {
+  themeMode: "default",
+  language: "en",
+  fontSize: 16,
+  screenReaderMode: false,
+  reducedMotion: false,
+  emotionColorTheme: false,
+};
+
+const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
+
+export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [settings, setSettings] = useState<AccessibilitySettings>(() => {
+    const saved = localStorage.getItem("accessibility-settings");
+    return saved ? JSON.parse(saved) : defaultSettings;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("accessibility-settings", JSON.stringify(settings));
+    
+    // Apply theme changes
+    document.documentElement.setAttribute("data-accessibility-theme", settings.themeMode);
+    document.documentElement.setAttribute("data-language", settings.language);
+    document.documentElement.style.fontSize = `${settings.fontSize}px`;
+    
+    if (settings.reducedMotion) {
+      document.documentElement.classList.add("reduce-motion");
+    } else {
+      document.documentElement.classList.remove("reduce-motion");
+    }
+
+    if (settings.emotionColorTheme) {
+      document.documentElement.classList.add("emotion-color-theme");
+    } else {
+      document.documentElement.classList.remove("emotion-color-theme");
+    }
+  }, [settings]);
+
+  const updateThemeMode = (mode: ThemeMode) => {
+    setSettings(prev => ({ ...prev, themeMode: mode }));
+  };
+
+  const updateLanguage = (lang: Language) => {
+    setSettings(prev => ({ ...prev, language: lang }));
+  };
+
+  const updateFontSize = (size: number) => {
+    setSettings(prev => ({ ...prev, fontSize: size }));
+  };
+
+  const toggleScreenReaderMode = () => {
+    setSettings(prev => ({ ...prev, screenReaderMode: !prev.screenReaderMode }));
+  };
+
+  const toggleReducedMotion = () => {
+    setSettings(prev => ({ ...prev, reducedMotion: !prev.reducedMotion }));
+  };
+
+  const toggleEmotionColorTheme = () => {
+    setSettings(prev => ({ ...prev, emotionColorTheme: !prev.emotionColorTheme }));
+  };
+
+  const resetSettings = () => {
+    setSettings(defaultSettings);
+  };
+
+  return (
+    <AccessibilityContext.Provider
+      value={{
+        settings,
+        updateThemeMode,
+        updateLanguage,
+        updateFontSize,
+        toggleScreenReaderMode,
+        toggleReducedMotion,
+        toggleEmotionColorTheme,
+        resetSettings,
+      }}
+    >
+      {children}
+    </AccessibilityContext.Provider>
+  );
+};
+
+export const useAccessibility = () => {
+  const context = useContext(AccessibilityContext);
+  if (!context) {
+    throw new Error("useAccessibility must be used within AccessibilityProvider");
+  }
+  return context;
+};

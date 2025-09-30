@@ -5,11 +5,12 @@ import { Home, Search, Users, Lightbulb, BookOpen } from "lucide-react";
 export const Navigation = () => {
   const location = useLocation();
 
-  const navItems = [
+  const navLinks = [
     { path: "/", label: "Home", icon: Home },
     { path: "/browse", label: "Browse", icon: Search },
+    { path: "/timeline", label: "Timeline", icon: BookOpen },
+    { path: "/impact-wall", label: "Impact Wall", icon: Lightbulb },
     { path: "/collaborate", label: "Collaborate", icon: Users },
-    { path: "/about", label: "About", icon: Lightbulb },
   ];
 
   return (
@@ -24,7 +25,7 @@ export const Navigation = () => {
           </Link>
 
           <div className="flex items-center gap-2">
-            {navItems.map(({ path, label, icon: Icon }) => (
+            {navLinks.map(({ path, label, icon: Icon }) => (
               <Link key={path} to={path}>
                 <Button
                   variant={location.pathname === path ? "default" : "ghost"}

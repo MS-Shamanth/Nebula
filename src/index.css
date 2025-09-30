@@ -8,25 +8,25 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Cosmic Base Colors */
-    --background: 250 50% 6%;
-    --foreground: 250 20% 98%;
+    /* Cosmic Base Colors - Enhanced Contrast */
+    --background: 250 50% 4%;
+    --foreground: 0 0% 98%;
 
-    --card: 250 40% 10%;
-    --card-foreground: 250 20% 98%;
+    --card: 250 40% 8%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 250 45% 8%;
-    --popover-foreground: 250 20% 98%;
+    --popover: 250 45% 6%;
+    --popover-foreground: 0 0% 98%;
 
     /* Nebula Primary - Deep Cosmic Purple */
-    --primary: 260 70% 55%;
-    --primary-foreground: 250 20% 98%;
+    --primary: 260 70% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 250 30% 20%;
-    --secondary-foreground: 250 20% 98%;
+    --secondary: 250 30% 15%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 250 20% 25%;
-    --muted-foreground: 250 15% 70%;
+    --muted: 250 20% 20%;
+    --muted-foreground: 240 5% 75%;
 
     --accent: 280 60% 50%;
     --accent-foreground: 250 20% 98%;
@@ -38,6 +38,14 @@ All colors MUST be HSL.
     --sentiment-calm: 180 40% 60%;
     --sentiment-inspiring: 280 70% 60%;
     --sentiment-analytical: 220 50% 55%;
+
+    /* Emotion Colors (for EventCard) */
+    --emotion-joy: 45 100% 60%;
+    --emotion-pride: 280 70% 60%;
+    --emotion-hope: 200 90% 55%;
+    --emotion-solidarity: 260 60% 55%;
+    --emotion-excitement: 350 85% 60%;
+    --emotion-regret: 30 70% 50%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 250 20% 98%;
@@ -70,9 +78,39 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    background: linear-gradient(180deg, hsl(250, 50%, 6%), hsl(260, 45%, 12%));
+    background: linear-gradient(180deg, hsl(250, 50%, 4%), hsl(260, 45%, 10%));
     min-height: 100vh;
   }
+
+  /* Accessibility themes */
+  [data-accessibility-theme="high-contrast"] {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 85%;
+    --border: 0 0% 30%;
+  }
+
+  [data-accessibility-theme="dyslexia"] {
+    font-family: 'OpenDyslexic', 'Comic Sans MS', Arial, sans-serif;
+    letter-spacing: 0.05em;
+    line-height: 1.8;
+  }
+
+  .reduce-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .emotion-color-theme .sentiment-joyful { background-color: hsl(var(--sentiment-joyful) / 0.3) !important; }
+  .emotion-color-theme .sentiment-curious { background-color: hsl(var(--sentiment-curious) / 0.3) !important; }
+  .emotion-color-theme .sentiment-urgent { background-color: hsl(var(--sentiment-urgent) / 0.3) !important; }
+  .emotion-color-theme .sentiment-calm { background-color: hsl(var(--sentiment-calm) / 0.3) !important; }
+  .emotion-color-theme .sentiment-inspiring { background-color: hsl(var(--sentiment-inspiring) / 0.3) !important; }
+  .emotion-color-theme .sentiment-analytical { background-color: hsl(var(--sentiment-analytical) / 0.3) !important; }
 }
 
 @layer components {
@@ -99,6 +137,21 @@ All colors MUST be HSL.
     }
   }
 
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+
   /* Sentiment Badge Styles */
   .sentiment-badge {
     @apply rounded-full font-semibold transition-all duration-300 hover:scale-105 shadow-sm;
@@ -110,6 +163,18 @@ All colors MUST be HSL.
   .sentiment-calm { @apply bg-sentiment-calm/10 text-sentiment-calm border border-sentiment-calm/30; }
   .sentiment-inspiring { @apply bg-sentiment-inspiring/10 text-sentiment-inspiring border border-sentiment-inspiring/30; }
   .sentiment-analytical { @apply bg-sentiment-analytical/10 text-sentiment-analytical border border-sentiment-analytical/30; }
+
+  /* Emotion Badge Styles */
+  .emotion-badge {
+    @apply rounded-full font-semibold transition-all duration-300 hover:scale-105 shadow-sm;
+  }
+
+  .emotion-joy { @apply bg-[hsl(var(--emotion-joy))]/10 text-[hsl(var(--emotion-joy))] border border-[hsl(var(--emotion-joy))]/30; }
+  .emotion-pride { @apply bg-[hsl(var(--emotion-pride))]/10 text-[hsl(var(--emotion-pride))] border border-[hsl(var(--emotion-pride))]/30; }
+  .emotion-hope { @apply bg-[hsl(var(--emotion-hope))]/10 text-[hsl(var(--emotion-hope))] border border-[hsl(var(--emotion-hope))]/30; }
+  .emotion-solidarity { @apply bg-[hsl(var(--emotion-solidarity))]/10 text-[hsl(var(--emotion-solidarity))] border border-[hsl(var(--emotion-solidarity))]/30; }
+  .emotion-excitement { @apply bg-[hsl(var(--emotion-excitement))]/10 text-[hsl(var(--emotion-excitement))] border border-[hsl(var(--emotion-excitement))]/30; }
+  .emotion-regret { @apply bg-[hsl(var(--emotion-regret))]/10 text-[hsl(var(--emotion-regret))] border border-[hsl(var(--emotion-regret))]/30; }
 
   /* Glow Effects */
   .glow-primary {
