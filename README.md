@@ -1,73 +1,110 @@
-# Welcome to your Lovable project
 
-## Project info
+# Nebula Copilot
 
-**URL**: https://lovable.dev/projects/294eefb1-5848-4c9f-8950-24da16fcb42f
+**Adaptive, Accessible, AI-Powered Content Platform**  
+_Built with Storyblok, Algolia, React, and Tailwind CSS_
 
-## How can I edit this code?
+***
 
-There are several ways of editing your application.
+## 🚀 Overview
 
-**Use Lovable**
+Nebula Copilot is a next-generation content hub where creators, editors, and teams can publish rich articles via Storyblok and deliver a delightful, personalized experience to users—complete with instant, semantic search powered by Algolia. The project was built for the Storyblok x Code & Coffee Hackathon as a showcase of modern, adaptive web content best practices.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/294eefb1-5848-4c9f-8950-24da16fcb42f) and start prompting.
+***
 
-Changes made via Lovable will be committed automatically to this repo.
+## ✨ Features
 
-**Use your preferred IDE**
+- **Article-Centric Experience:** Each article features headline, hero image, rich text body, categories, and call-to-action—all managed in Storyblok.
+- **Instant Global Search:** Algolia powers user-friendly, faceted search by headline, tags, categories, and full text.
+- **Adaptive Accessibility:** Supports dyslexia-friendly font, dark mode, high-contrast themes, and accessible navigation.
+- **Editor Live Preview:** Edits in Storyblok are live for site users within seconds.
+- **Playlist & Curation:** Users can build collections/playlists for onboarding, study kits, or special sharing.
+- **Extensible:** Easy to expand with more features, content types, or personalization.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+***
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠️ Technologies
 
-Follow these steps:
+- **Languages:** JavaScript, TypeScript
+- **Frameworks:** React, Tailwind CSS, Algolia InstantSearch, Storyblok SDK
+- **APIs:** Storyblok CDN API, Algolia Search API
+- **Platforms:** GitHub (repo), Render (deployment)
+- **Cloud Services:** Storyblok (content), Algolia (search)
+- **No Supabase or external databases used**
+- **Environment Variables:** All API keys/tokens stored securely
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+***
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 📦 Setup & Installation
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. **Clone repo from GitHub:**
+   ```
+   git clone https://github.com/your-username/nebula-copilot.git
+   cd nebula-copilot
+   ```
+2. **Install dependencies:**
+   ```
+   npm install
+   ```
+3. **Environment setup:**
+   - Copy `.env.example` to `.env` and add tokens/keys:
+     ```
+     STORYBLOK_PUBLIC_TOKEN=trm0PcaUyik2qglgeMsOqwtt
+     STORYBLOK_SPACE_ID=287485743695345
+     STORYBLOK_PERSONAL_TOKEN=MYLUVN0qrEMBQ06SH1bXSwtt-96161753895597-WNnT6WgyWxWGvmaNgscx
+     ALGOLIA_APP_ID=XDK6HXI1LY
+     ALGOLIA_SEARCH_KEY=d93493726005e2e0ab71317c027d1eb3
+     ALGOLIA_WRITE_KEY=563c1f48792fbc1d6891e085d9ae0091
+     ALGOLIA_INDEX=Nebula
+     ```
+4. **Start the development server:**
+   ```
+   npm run dev
+   ```
+   - Or use `npm run start` as needed for your setup.
+5. **View app at:** `http://localhost:3000`
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+***
 
-**Edit a file directly in GitHub**
+## 📚 Content Model
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- Articles are modeled in Storyblok as `'article-page'` blocks, with these fields:
+  - `headline` (Text)
+  - `image` (Asset)
+  - `text` (Richtext)
+  - `call_to_action` (Multi Options/Reference)
+  - `categories` (Multi Options/Reference)
 
-**Use GitHub Codespaces**
+***
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🏆 Project Highlights
 
-## What technologies are used for this project?
+- *Article pages display all content fields, not just summaries or placeholders.*
+- *Instant site-wide search for any article, tag, or category.*
+- *Fully adaptive and accessible for diverse user needs.*
 
-This project is built with:
+***
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🙌 Credits
 
-## How can I deploy this project?
+- **Built For:** Storyblok x Code & Coffee Hackathon
+- **Tech:** Storyblok, Algolia, React, Tailwind, Lovable
 
-Simply open [Lovable](https://lovable.dev/projects/294eefb1-5848-4c9f-8950-24da16fcb42f) and click on Share -> Publish.
+***
 
-## Can I connect a custom domain to my Lovable project?
+## 📈 What’s Next
 
-Yes, you can!
+- Sentiment-based search and recommendations.
+- Time-travel content snapshots and live collaboration.
+- Advanced curation and AR overlays.
+- Open source more modules for community extensibility.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+***
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 📄 License
+
+MIT
+
+***
+
+Let me know if you need section changes, example commands, or further details for your hackathon submission!
