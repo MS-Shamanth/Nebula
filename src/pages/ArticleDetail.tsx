@@ -6,15 +6,19 @@ import { RichTextRenderer } from "@/components/RichTextRenderer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ArrowLeft, Calendar, User } from "lucide-react";
+import { Heart, ArrowLeft, Calendar, User, Volume2, VolumeX, Share2, Bookmark } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { useAccessibility } from "@/contexts/AccessibilityContext";
 
 const ArticleDetail = () => {
   const { slug } = useParams();
   const [article, setArticle] = useState<StoryblokArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isReading, setIsReading] = useState(false);
+  const { settings, readText, stopReading } = useAccessibility();
 
   useEffect(() => {
     const loadArticle = async () => {
@@ -39,6 +43,32 @@ const ArticleDetail = () => {
     setIsLiked(!isLiked);
     if (!isLiked) {
       toast.success('Added to your favorites!');
+    }
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success('Link copied to clipboard!');
+  };
+
+  const handleReadArticle = () => {
+    if (!settings.voiceReaderEnabled) {
+      toast.error('Please enable voice reader in accessibility settings');
+      return;
+    }
+
+    if (isReading) {
+      stopReading();
+      setIsReading(false);
+    } else {
+      const textContent = [
+        article?.content?.headline || article?.content?.title,
+        article?.content?.excerpt || article?.content?.description,
+        typeof article?.content?.text === 'string' ? article.content.text : ''
+      ].filter(Boolean).join('. ');
+      
+      readText(textContent);
+      setIsReading(true);
     }
   };
 
@@ -170,15 +200,50 @@ const ArticleDetail = () => {
               </Card>
             )}
 
-            <div className="flex items-center justify-between pt-6 border-t">
+            <div className="flex flex-wrap items-center gap-3 pt-6 border-t">
               <Button
                 variant={isLiked ? "default" : "outline"}
                 onClick={handleLike}
                 className="gap-2"
-                size="lg"
               >
-                <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
-                <span>{isLiked ? 'Liked!' : 'Like this article'}</span>
+                <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
+                <span>{isLiked ? 'Liked' : 'Like'}</span>
+              </Button>
+              
+              <Button
+                variant="outline"
+                onClick={handleShare}
+                className="gap-2"
+              >
+                <Share2 className="w-4 h-4" />
+                Share
+              </Button>
+              
+              <Button
+                variant="outline"
+                onClick={() => setIsBookmarked(!isBookmarked)}
+                className="gap-2"
+              >
+                <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />
+                {isBookmarked ? 'Saved' : 'Save'}
+              </Button>
+              
+              <Button
+                variant="outline"
+                onClick={handleReadArticle}
+                className="gap-2"
+              >
+                {isReading ? (
+                  <>
+                    <VolumeX className="w-4 h-4" />
+                    Stop
+                  </>
+                ) : (
+                  <>
+                    <Volume2 className="w-4 h-4" />
+                    Read Aloud
+                  </>
+                )}
               </Button>
             </div>
           </div>

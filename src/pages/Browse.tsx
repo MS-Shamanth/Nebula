@@ -197,6 +197,14 @@ const Browse = () => {
                     </Button>
                   </div>
                 )}
+                
+                {filteredArticles.length > 0 && (
+                  <div className="mt-12 text-center">
+                    <Button size="lg" onClick={() => window.location.href = '/submit'}>
+                      Share Your Story
+                    </Button>
+                  </div>
+                )}
               </>
             )}
           </div>

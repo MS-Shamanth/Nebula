@@ -1,4 +1,4 @@
-import { useAccessibility, ThemeMode, Language } from "@/contexts/AccessibilityContext";
+import { useAccessibility, ThemeMode, Language, VoiceLanguage } from "@/contexts/AccessibilityContext";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Label } from "./ui/label";
@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Switch } from "./ui/switch";
 import { Accessibility, Type, Eye, Volume2, Palette, RotateCcw, Moon, Sun } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { ScrollArea } from "./ui/scroll-area";
+import { Separator } from "./ui/separator";
 
 export const AccessibilityPanel = () => {
   const {
@@ -18,6 +20,8 @@ export const AccessibilityPanel = () => {
     toggleReducedMotion,
     toggleEmotionColorTheme,
     toggleDarkMode,
+    toggleVoiceReader,
+    updateVoiceLanguage,
     resetSettings,
   } = useAccessibility();
 
@@ -28,7 +32,8 @@ export const AccessibilityPanel = () => {
           <Accessibility className="h-6 w-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-md">
+        <ScrollArea className="h-full pr-4">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             <Accessibility className="h-5 w-5" />
@@ -147,6 +152,45 @@ export const AccessibilityPanel = () => {
             />
           </div>
 
+          <Separator />
+
+          {/* Voice Reader Section */}
+          <div className="space-y-4">
+            <h3 className="font-semibold flex items-center gap-2">
+              <Volume2 className="h-4 w-4" />
+              Voice Reader
+            </h3>
+            
+            <div className="flex items-center justify-between">
+              <Label htmlFor="voice-reader" className="flex items-center gap-2">
+                Enable Voice Reader
+              </Label>
+              <Switch
+                id="voice-reader"
+                checked={settings.voiceReaderEnabled}
+                onCheckedChange={toggleVoiceReader}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="voice-language">Voice Language</Label>
+              <Select
+                value={settings.voiceLanguage}
+                onValueChange={(value) => updateVoiceLanguage(value as VoiceLanguage)}
+              >
+                <SelectTrigger id="voice-language">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en-US">English (US)</SelectItem>
+                  <SelectItem value="es-ES">Spanish</SelectItem>
+                  <SelectItem value="fr-FR">French</SelectItem>
+                  <SelectItem value="de-DE">German</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           {/* Reset Button */}
           <Button onClick={resetSettings} variant="outline" className="w-full gap-2">
             <RotateCcw className="h-4 w-4" />
@@ -160,6 +204,7 @@ export const AccessibilityPanel = () => {
             </p>
           </Card>
         </div>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   );

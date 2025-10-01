@@ -3,10 +3,105 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Users, MessageSquare, GitBranch, Clock, CheckCircle, AlertCircle, ThumbsUp, Eye } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Users, MessageSquare, GitBranch, Clock, CheckCircle, AlertCircle, ThumbsUp, Eye, UserPlus, User } from "lucide-react";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 const Collaborate = () => {
   const [activeTab, setActiveTab] = useState<"editor" | "versions" | "qa">("editor");
+  const [articleTitle, setArticleTitle] = useState("");
+  const [articleContent, setArticleContent] = useState("");
+  const [articleTags, setArticleTags] = useState("");
+  const [question, setQuestion] = useState("");
+  const [questions, setQuestions] = useState([
+    {
+      id: 1,
+      question: "How does the blockchain verification process work in practice?",
+      askedBy: "Alex Thompson",
+      answer: "The verification uses a SHA-256 hash of the article content at publish time. This hash is immutably stored and can be checked against the current content to detect any changes.",
+      answeredBy: "Prof. David Kim",
+      answeredByTitle: "Blockchain Security Expert",
+      votes: 23
+    },
+    {
+      id: 2,
+      question: "Can this system scale to millions of concurrent collaborators?",
+      askedBy: "Jamie Chen",
+      answer: "Yes! The architecture uses WebSocket pools and Redis for state management, allowing horizontal scaling. We've tested with 50K+ concurrent users with sub-100ms latency.",
+      answeredBy: "Dr. Maya Patel",
+      answeredByTitle: "Distributed Systems Engineer",
+      votes: 18
+    }
+  ]);
+  const [previewContent, setPreviewContent] = useState("");
+  const [showPreview, setShowPreview] = useState(false);
+  const [selectedVersion, setSelectedVersion] = useState<any>(null);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const handlePublish = () => {
+    if (!articleTitle || !articleContent) {
+      toast({
+        title: "Missing fields",
+        description: "Please fill in title and content",
+        variant: "destructive"
+      });
+      return;
+    }
+    toast({
+      title: "Article published!",
+      description: "Your article has been published successfully"
+    });
+    setArticleTitle("");
+    setArticleContent("");
+    setArticleTags("");
+  };
+
+  const handleSaveDraft = () => {
+    toast({
+      title: "Draft saved",
+      description: "Your work has been saved as a draft"
+    });
+  };
+
+  const handlePreview = () => {
+    setPreviewContent(articleContent);
+    setShowPreview(true);
+  };
+
+  const handleViewVersion = (version: any) => {
+    setSelectedVersion(version);
+  };
+
+  const handleSubmitQuestion = () => {
+    if (!question.trim()) return;
+    
+    const newQuestion = {
+      id: questions.length + 1,
+      question: question,
+      askedBy: "You",
+      answer: "",
+      answeredBy: "",
+      answeredByTitle: "",
+      votes: 0
+    };
+    
+    setQuestions([newQuestion, ...questions]);
+    setQuestion("");
+    toast({
+      title: "Question submitted",
+      description: "Your question has been posted to the expert panel"
+    });
+  };
+
+  const handleAddFriend = (userName: string) => {
+    toast({
+      title: "Friend request sent",
+      description: `Friend request sent to ${userName}`
+    });
+  };
+
   return <div className="min-h-screen bg-gradient-hero">
       <main className="container mx-auto px-4 py-12 space-y-8 bg-slate-950">
         {/* Header */}
@@ -46,30 +141,44 @@ const Collaborate = () => {
                     <label className="block text-sm font-semibold text-foreground mb-2">
                       Article Title
                     </label>
-                    <Input placeholder="Enter your article title..." className="text-lg" />
+                    <Input 
+                      placeholder="Enter your article title..." 
+                      className="text-lg"
+                      value={articleTitle}
+                      onChange={(e) => setArticleTitle(e.target.value)}
+                    />
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-2">
                       Content
                     </label>
-                    <Textarea placeholder="Start writing your article... (Markdown supported)" className="min-h-[400px] font-mono" />
+                    <Textarea 
+                      placeholder="Start writing your article... (Markdown supported)" 
+                      className="min-h-[400px] font-mono"
+                      value={articleContent}
+                      onChange={(e) => setArticleContent(e.target.value)}
+                    />
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-2">
                       Tags
                     </label>
-                    <Input placeholder="Add tags separated by commas..." />
+                    <Input 
+                      placeholder="Add tags separated by commas..."
+                      value={articleTags}
+                      onChange={(e) => setArticleTags(e.target.value)}
+                    />
                   </div>
 
                   <div className="flex gap-2">
-                    <Button className="gap-2">
+                    <Button className="gap-2" onClick={handlePublish}>
                       <CheckCircle className="w-4 h-4" />
                       Publish
                     </Button>
-                    <Button variant="outline">Save Draft</Button>
-                    <Button variant="outline">Preview</Button>
+                    <Button variant="outline" onClick={handleSaveDraft}>Save Draft</Button>
+                    <Button variant="outline" onClick={handlePreview}>Preview</Button>
                   </div>
                 </div>
               </Card>}
@@ -126,7 +235,7 @@ const Collaborate = () => {
                       </p>
 
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" onClick={() => handleViewVersion(version)}>
                           <Eye className="w-3 h-3 mr-1" />
                           View
                         </Button>
@@ -145,49 +254,58 @@ const Collaborate = () => {
                 </h3>
 
                 <div className="space-y-6">
-                  {[{
-                question: "How does the blockchain verification process work in practice?",
-                askedBy: "Alex Thompson",
-                answer: "The verification uses a SHA-256 hash of the article content at publish time. This hash is immutably stored and can be checked against the current content to detect any changes.",
-                answeredBy: "Prof. David Kim",
-                answeredByTitle: "Blockchain Security Expert",
-                votes: 23
-              }, {
-                question: "Can this system scale to millions of concurrent collaborators?",
-                askedBy: "Jamie Chen",
-                answer: "Yes! The architecture uses WebSocket pools and Redis for state management, allowing horizontal scaling. We've tested with 50K+ concurrent users with sub-100ms latency.",
-                answeredBy: "Dr. Maya Patel",
-                answeredByTitle: "Distributed Systems Engineer",
-                votes: 18
-              }].map((qa, index) => <div key={index} className="border-l-4 border-primary pl-4 space-y-3">
-                      <div>
-                        <p className="font-semibold text-foreground mb-1">
-                          Q: {qa.question}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Asked by {qa.askedBy}
-                        </p>
-                      </div>
-
-                      <div className="bg-muted/30 rounded-lg p-4 space-y-2">
-                        <p className="text-foreground">{qa.answer}</p>
-                        <div className="flex items-center justify-between">
-                          <div className="text-sm">
-                            <p className="font-semibold text-primary">{qa.answeredBy}</p>
-                            <p className="text-xs text-muted-foreground">{qa.answeredByTitle}</p>
+                  {questions.map((qa, index) => <div key={qa.id} className="border-l-4 border-primary pl-4 space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <p className="font-semibold text-foreground mb-1">
+                            Q: {qa.question}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-xs text-muted-foreground">
+                              Asked by {qa.askedBy}
+                            </p>
+                            <Button size="sm" variant="ghost" className="h-6 px-2 gap-1">
+                              <User className="w-3 h-3" />
+                              View Profile
+                            </Button>
                           </div>
-                          <Button size="sm" variant="ghost" className="gap-1">
-                            <ThumbsUp className="w-3 h-3" />
-                            {qa.votes}
-                          </Button>
                         </div>
                       </div>
+
+                      {qa.answer ? (
+                        <div className="bg-muted/30 rounded-lg p-4 space-y-2">
+                          <p className="text-foreground">{qa.answer}</p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="text-sm">
+                                <p className="font-semibold text-primary">{qa.answeredBy}</p>
+                                <p className="text-xs text-muted-foreground">{qa.answeredByTitle}</p>
+                              </div>
+                              <Button size="sm" variant="ghost" className="h-6 px-2 gap-1">
+                                <User className="w-3 h-3" />
+                                View Profile
+                              </Button>
+                            </div>
+                            <Button size="sm" variant="ghost" className="gap-1">
+                              <ThumbsUp className="w-3 h-3" />
+                              {qa.votes}
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground italic">Waiting for expert response...</p>
+                      )}
                     </div>)}
 
                   <div className="pt-4 border-t border-border">
                     <h4 className="font-semibold text-foreground mb-3">Ask a Question</h4>
-                    <Textarea placeholder="Type your question here..." className="mb-3" />
-                    <Button>Submit Question</Button>
+                    <Textarea 
+                      placeholder="Type your question here..." 
+                      className="mb-3"
+                      value={question}
+                      onChange={(e) => setQuestion(e.target.value)}
+                    />
+                    <Button onClick={handleSubmitQuestion}>Submit Question</Button>
                   </div>
                 </div>
               </Card>}
@@ -228,6 +346,16 @@ const Collaborate = () => {
                         {user.status}
                       </p>
                     </div>
+                    {user.name !== "You" && (
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        className="h-7 px-2 gap-1"
+                        onClick={() => handleAddFriend(user.name)}
+                      >
+                        <UserPlus className="w-3 h-3" />
+                      </Button>
+                    )}
                   </div>)}
               </div>
             </Card>
@@ -263,10 +391,42 @@ const Collaborate = () => {
               </div>
             </Card>
 
-            {/* Verification Badge */}
-            
           </div>
         </div>
+
+        {/* Preview Dialog */}
+        <Dialog open={showPreview} onOpenChange={setShowPreview}>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Article Preview</DialogTitle>
+            </DialogHeader>
+            <div className="prose dark:prose-invert max-w-none">
+              <h1>{articleTitle || "Untitled Article"}</h1>
+              <div className="whitespace-pre-wrap">{previewContent}</div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Version View Dialog */}
+        <Dialog open={!!selectedVersion} onOpenChange={() => setSelectedVersion(null)}>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Version {selectedVersion?.version} - {selectedVersion?.editor}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-muted-foreground mb-2">{selectedVersion?.time}</p>
+                <Badge variant={selectedVersion?.status === "current" ? "default" : "secondary"}>
+                  {selectedVersion?.status}
+                </Badge>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">Changes:</h3>
+                <p className="text-sm text-muted-foreground">{selectedVersion?.changes}</p>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>;
 };

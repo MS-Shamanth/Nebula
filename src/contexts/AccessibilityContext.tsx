@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 export type ThemeMode = "default" | "high-contrast" | "dyslexia";
 export type Language = "en" | "es" | "fr" | "de";
+export type VoiceLanguage = "en-US" | "es-ES" | "fr-FR" | "de-DE";
 
 interface AccessibilitySettings {
   themeMode: ThemeMode;
@@ -11,6 +12,8 @@ interface AccessibilitySettings {
   screenReaderMode: boolean;
   reducedMotion: boolean;
   emotionColorTheme: boolean;
+  voiceReaderEnabled: boolean;
+  voiceLanguage: VoiceLanguage;
 }
 
 interface AccessibilityContextType {
@@ -23,6 +26,10 @@ interface AccessibilityContextType {
   toggleReducedMotion: () => void;
   toggleEmotionColorTheme: () => void;
   toggleDarkMode: () => void;
+  toggleVoiceReader: () => void;
+  updateVoiceLanguage: (lang: VoiceLanguage) => void;
+  readText: (text: string) => void;
+  stopReading: () => void;
   resetSettings: () => void;
 }
 
@@ -34,6 +41,8 @@ const defaultSettings: AccessibilitySettings = {
   screenReaderMode: false,
   reducedMotion: false,
   emotionColorTheme: false,
+  voiceReaderEnabled: false,
+  voiceLanguage: "en-US",
 };
 
 const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
@@ -104,8 +113,35 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     setSettings(prev => ({ ...prev, darkMode: !prev.darkMode }));
   };
 
+  const toggleVoiceReader = () => {
+    setSettings(prev => ({ ...prev, voiceReaderEnabled: !prev.voiceReaderEnabled }));
+    if (settings.voiceReaderEnabled) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  const updateVoiceLanguage = (lang: VoiceLanguage) => {
+    setSettings(prev => ({ ...prev, voiceLanguage: lang }));
+  };
+
+  const readText = (text: string) => {
+    if (!settings.voiceReaderEnabled) return;
+    
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = settings.voiceLanguage;
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopReading = () => {
+    window.speechSynthesis.cancel();
+  };
+
   const resetSettings = () => {
     setSettings(defaultSettings);
+    window.speechSynthesis.cancel();
   };
 
   return (
@@ -120,6 +156,10 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
         toggleReducedMotion,
         toggleEmotionColorTheme,
         toggleDarkMode,
+        toggleVoiceReader,
+        updateVoiceLanguage,
+        readText,
+        stopReading,
         resetSettings,
       }}
     >
