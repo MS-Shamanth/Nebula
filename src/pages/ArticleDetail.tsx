@@ -1,82 +1,50 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { storyblok } from "@/lib/storyblok";
-import { StoryblokStory, Story, EmotionType } from "@/types/story";
+import { fetchArticleBySlug, StoryblokArticle } from "@/lib/storyblok-client";
 import { SentimentBadge } from "@/components/SentimentBadge";
-import { EmotionBadge } from "@/components/EmotionBadge";
+import { RichTextRenderer } from "@/components/RichTextRenderer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Heart, Tag, TrendingUp, ArrowLeft, Lock, Unlock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Heart, ArrowLeft, Calendar, User } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 
 const ArticleDetail = () => {
-  const { id } = useParams();
-  const [story, setStory] = useState<Story | null>(null);
+  const { slug } = useParams();
+  const [article, setArticle] = useState<StoryblokArticle | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isInspired, setIsInspired] = useState(false);
-  const [showHidden, setShowHidden] = useState(false);
-  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
+  const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
-    const fetchStory = async () => {
+    const loadArticle = async () => {
+      if (!slug) return;
+      
       try {
         setLoading(true);
-        const response = await storyblok.get(`cdn/stories/${id}`);
-        const storyData: StoryblokStory = response.data.story;
-        
-        const transformedStory: Story = {
-          id: storyData.uuid,
-          title: storyData.content.title,
-          description: storyData.content.description,
-          date: new Date(storyData.content.date),
-          emotion: storyData.content.emotion as EmotionType,
-          impact: storyData.content.impact,
-          tags: storyData.content.tags ? storyData.content.tags.split(',').map(t => t.trim()) : [],
-          inspirationCount: 0,
-          hidden: storyData.content.hidden_chapter,
-          imageUrl: storyData.content.image?.filename,
-        };
-
-        setStory(transformedStory);
-
-        // Analyze tone if not already analyzed
-        const { data: analysisData, error } = await supabase.functions.invoke('analyze-tone', {
-          body: { text: transformedStory.description }
-        });
-
-        if (!error && analysisData) {
-          setAiAnalysis(analysisData);
-        }
+        const data = await fetchArticleBySlug(slug);
+        setArticle(data);
       } catch (error) {
-        console.error('Error fetching story:', error);
+        console.error('Error fetching article:', error);
         toast.error('Failed to load article');
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchStory();
-    }
-  }, [id]);
+    loadArticle();
+  }, [slug]);
 
-  const handleInspire = () => {
-    setIsInspired(!isInspired);
-    if (!isInspired) {
-      toast.success('Added to your inspiration collection!');
+  const handleLike = () => {
+    setIsLiked(!isLiked);
+    if (!isLiked) {
+      toast.success('Added to your favorites!');
     }
-  };
-
-  const handleUnlockHidden = () => {
-    setShowHidden(true);
-    toast.success('Hidden chapter unlocked!');
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading article...</p>
@@ -85,10 +53,10 @@ const ArticleDetail = () => {
     );
   }
 
-  if (!story) {
+  if (!article) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Card className="p-8 text-center max-w-md">
           <h2 className="text-2xl font-bold mb-4">Article Not Found</h2>
           <p className="text-muted-foreground mb-6">The article you're looking for doesn't exist.</p>
           <Link to="/browse">
@@ -102,9 +70,19 @@ const ArticleDetail = () => {
     );
   }
 
+  const title = article.content.headline || article.content.title || 'Untitled';
+  const content = article.content.text || article.content.body || article.content.content;
+  const excerpt = article.content.excerpt || article.content.description;
+  const imageUrl = article.content.image?.filename;
+  const author = article.content.author || 'Anonymous';
+  const publishedDate = article.published_at ? new Date(article.published_at) : new Date(article.created_at);
+  const sentiment = article.content.sentiment || 'inspiring';
+  const categories = article.content.categories || [];
+  const tags = article.content.tags ? article.content.tags.split(',').map(t => t.trim()) : [];
+
   return (
-    <div className="min-h-screen">
-      <main className="container mx-auto px-4 py-12">
+    <div className="min-h-screen bg-background">
+      <main className="container mx-auto px-4 py-8 md:py-12">
         <Link to="/browse">
           <Button variant="ghost" className="mb-6 gap-2">
             <ArrowLeft className="w-4 h-4" />
@@ -113,112 +91,94 @@ const ArticleDetail = () => {
         </Link>
 
         <article className="max-w-4xl mx-auto">
-          {story.imageUrl && (
-            <div className="w-full h-96 rounded-2xl overflow-hidden mb-8">
+          {imageUrl && (
+            <div className="w-full h-64 md:h-96 rounded-2xl overflow-hidden mb-8">
               <img
-                src={story.imageUrl}
-                alt={story.title}
+                src={imageUrl}
+                alt={article.content.image?.alt || title}
                 className="w-full h-full object-cover"
               />
             </div>
           )}
 
           <div className="space-y-6">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <h1 className="text-4xl font-bold text-foreground mb-4">
-                  {story.title}
-                </h1>
-                <p className="text-muted-foreground">
-                  {format(story.date, 'MMMM d, yyyy')}
-                </p>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <SentimentBadge sentiment={sentiment as any} />
+                {categories.length > 0 && categories.map((cat: any, i: number) => (
+                  <Badge key={i} variant="outline">{cat.name || cat}</Badge>
+                ))}
               </div>
-              <EmotionBadge emotion={story.emotion} />
-            </div>
 
-            {aiAnalysis && (
-              <Card className="p-4 bg-primary/10 border-primary/20">
-                <h3 className="font-semibold mb-2 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4" />
-                  AI Tone Analysis
-                </h3>
-                <p className="text-sm text-foreground/80">
-                  Detected emotion: <span className="font-medium">{aiAnalysis.emotion}</span>
-                </p>
-                <p className="text-sm text-foreground/80 mt-1">
-                  {aiAnalysis.impact}
-                </p>
-              </Card>
-            )}
+              <h1 className="text-3xl md:text-5xl font-bold text-foreground leading-tight">
+                {title}
+              </h1>
 
-            <div className="prose prose-invert max-w-none">
-              <p className="text-lg leading-relaxed text-foreground/90">
-                {story.description}
-              </p>
-            </div>
-
-            {story.impact && (
-              <Card className="p-4 bg-secondary/30">
-                <div className="flex items-center gap-2 text-primary">
-                  <TrendingUp className="w-5 h-5" />
-                  <span className="font-semibold">Impact: {story.impact}</span>
+              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  <span>{author}</span>
                 </div>
-              </Card>
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>{format(publishedDate, 'MMMM d, yyyy')}</span>
+                </div>
+                {article.content.read_time && (
+                  <span>{article.content.read_time} min read</span>
+                )}
+              </div>
+            </div>
+
+            {excerpt && (
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed border-l-4 border-primary pl-4">
+                {excerpt}
+              </p>
             )}
 
-            {story.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {story.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-secondary/50 text-sm text-foreground"
-                  >
-                    <Tag className="w-3 h-3" />
-                    {tag}
-                  </span>
+            <div className="prose prose-lg dark:prose-invert max-w-none py-6">
+              {content ? (
+                typeof content === 'string' ? (
+                  <div className="whitespace-pre-wrap text-foreground/90 leading-relaxed">
+                    {content}
+                  </div>
+                ) : (
+                  <RichTextRenderer content={content} />
+                )
+              ) : (
+                <p className="text-muted-foreground">No content available for this article.</p>
+              )}
+            </div>
+
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-6 border-t">
+                {tags.map((tag, index) => (
+                  <Badge key={index} variant="secondary">{tag}</Badge>
                 ))}
               </div>
             )}
 
-            {story.hidden && (
-              <Card className="p-6 border-primary/20">
-                {!showHidden ? (
-                  <div className="text-center space-y-4">
-                    <Lock className="w-12 h-12 mx-auto text-primary" />
-                    <h3 className="text-xl font-semibold">Hidden Chapter Available</h3>
-                    <p className="text-muted-foreground">
-                      Unlock the rest of the story to discover what happened next
-                    </p>
-                    <Button onClick={handleUnlockHidden} className="gap-2">
-                      <Unlock className="w-4 h-4" />
-                      Unlock Hidden Chapter
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-4 animate-fade-in">
-                    <div className="flex items-center gap-2 text-primary">
-                      <Unlock className="w-5 h-5" />
-                      <h3 className="text-xl font-semibold">What Happened Next</h3>
+            {article.content.call_to_action && article.content.call_to_action.length > 0 && (
+              <Card className="p-6 bg-primary/10 border-primary/20">
+                <h3 className="text-lg font-semibold mb-3">Next Steps</h3>
+                <div className="space-y-2">
+                  {article.content.call_to_action.map((cta: any, i: number) => (
+                    <div key={i} className="text-foreground/80">
+                      {cta.text || cta}
                     </div>
-                    <p className="text-foreground/80 leading-relaxed italic">
-                      {story.hidden}
-                    </p>
-                  </div>
-                )}
+                  ))}
+                </div>
               </Card>
             )}
 
-            <div className="flex items-center justify-between pt-6 border-t border-border">
+            <div className="flex items-center justify-between pt-6 border-t">
               <Button
-                variant={isInspired ? "default" : "outline"}
-                onClick={handleInspire}
+                variant={isLiked ? "default" : "outline"}
+                onClick={handleLike}
                 className="gap-2"
                 size="lg"
               >
-                <Heart className={`w-5 h-5 ${isInspired ? 'fill-current' : ''}`} />
-                <span>
-                  {isInspired ? 'Inspired!' : 'Mark as Inspiring'}
-                </span>
+                <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+                <span>{isLiked ? 'Liked!' : 'Like this article'}</span>
               </Button>
             </div>
           </div>

@@ -12,10 +12,6 @@ export const Navigation = () => {
     label: "Browse",
     icon: Search
   }, {
-    path: "/timeline",
-    label: "Timeline",
-    icon: BookOpen
-  }, {
     path: "/impact-wall",
     label: "Impact Wall",
     icon: Lightbulb

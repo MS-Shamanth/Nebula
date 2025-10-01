@@ -10,7 +10,6 @@ import Home from "./pages/Home";
 import Browse from "./pages/Browse";
 import Collaborate from "./pages/Collaborate";
 import About from "./pages/About";
-import Timeline from "./pages/Timeline";
 import ImpactWall from "./pages/ImpactWall";
 import Playlists from "./pages/Playlists";
 import ArticleDetail from "./pages/ArticleDetail";
@@ -32,10 +31,9 @@ const App = () => (
             <Route path="/browse" element={<Browse />} />
             <Route path="/collaborate" element={<Collaborate />} />
             <Route path="/about" element={<About />} />
-            <Route path="/timeline" element={<Timeline />} />
             <Route path="/impact-wall" element={<ImpactWall />} />
             <Route path="/playlists" element={<Playlists />} />
-            <Route path="/article/:id" element={<ArticleDetail />} />
+            <Route path="/article/:slug" element={<ArticleDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

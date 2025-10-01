@@ -21,7 +21,7 @@ export const ArticleCard = ({
       onKarma?.(article.id);
     }
   };
-  return <Card className="group overflow-hidden bg-gradient-card border-border hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
+  return <Card className="group overflow-hidden bg-card border-border hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
       <Link to={`/article/${article.id}`} className="block">
         {article.imageUrl && <div className="relative h-48 overflow-hidden">
             <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -36,7 +36,7 @@ export const ArticleCard = ({
             </div>}
           
           <div className="space-y-2">
-            <h3 className="text-xl font-bold transition-colors line-clamp-2 text-purple-600">
+            <h3 className="text-xl font-bold transition-colors line-clamp-2 text-foreground hover:text-primary">
               {article.title}
             </h3>
             <p className="text-sm text-muted-foreground">
@@ -44,7 +44,7 @@ export const ArticleCard = ({
             </p>
           </div>
 
-          <p className="line-clamp-3 leading-relaxed text-zinc-950">
+          <p className="line-clamp-3 leading-relaxed text-muted-foreground">
             {article.excerpt}
           </p>
 

@@ -5,7 +5,7 @@ import { Label } from "./ui/label";
 import { Slider } from "./ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Switch } from "./ui/switch";
-import { Accessibility, Type, Eye, Volume2, Palette, RotateCcw } from "lucide-react";
+import { Accessibility, Type, Eye, Volume2, Palette, RotateCcw, Moon, Sun } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 
 export const AccessibilityPanel = () => {
@@ -17,6 +17,7 @@ export const AccessibilityPanel = () => {
     toggleScreenReaderMode,
     toggleReducedMotion,
     toggleEmotionColorTheme,
+    toggleDarkMode,
     resetSettings,
   } = useAccessibility();
 
@@ -39,6 +40,22 @@ export const AccessibilityPanel = () => {
         </SheetHeader>
 
         <div className="space-y-6 py-6">
+          {/* Dark Mode Toggle */}
+          <div className="flex items-center justify-between p-4 bg-card rounded-lg border">
+            <Label htmlFor="dark-mode" className="flex items-center gap-2 cursor-pointer">
+              {settings.darkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+              <div>
+                <div className="font-semibold">Dark Mode</div>
+                <div className="text-xs text-muted-foreground">Toggle dark/light theme</div>
+              </div>
+            </Label>
+            <Switch
+              id="dark-mode"
+              checked={settings.darkMode}
+              onCheckedChange={toggleDarkMode}
+            />
+          </div>
+
           {/* Theme Mode */}
           <div className="space-y-2">
             <Label htmlFor="theme-mode" className="flex items-center gap-2">

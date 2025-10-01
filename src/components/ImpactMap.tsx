@@ -36,5 +36,21 @@ export const ImpactMap = ({
     color: "text-sentiment-urgent",
     bg: "bg-sentiment-urgent/10"
   }];
-  return;
+  return (
+    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {impactMetrics.map((metric, index) => (
+        <Card key={index} className={`p-6 hover:scale-105 transition-transform ${metric.bg} border-0`}>
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-full ${metric.bg}`}>
+              <metric.icon className={`w-6 h-6 ${metric.color}`} />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">{metric.label}</p>
+              <p className={`text-2xl font-bold ${metric.color}`}>{metric.value}</p>
+            </div>
+          </div>
+        </Card>
+      ))}
+    </section>
+  );
 };

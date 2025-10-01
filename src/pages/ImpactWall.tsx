@@ -66,7 +66,7 @@ const ImpactWall = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-12 space-y-12">
         {/* Header */}
         <section className="text-center space-y-6">
@@ -75,11 +75,11 @@ const ImpactWall = () => {
             <span className="text-sm font-medium">Community Curated</span>
           </div>
           
-          <h1 className="text-5xl font-bold bg-gradient-aurora bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground">
             Impact Wall
           </h1>
           
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             A handpicked collection of the most inspiring moments from our community.
             Create your own playlist of stories that resonate with you.
           </p>

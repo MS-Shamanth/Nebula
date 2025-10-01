@@ -17,8 +17,8 @@ export const SentimentFilter = ({
       <div className="flex flex-wrap gap-2">
         {allSentiments.map(sentiment => {
         const isSelected = selectedSentiments.includes(sentiment);
-        return <Button key={sentiment} variant={isSelected ? "default" : "outline"} size="sm" onClick={() => onToggle(sentiment)} className={`transition-all ${isSelected ? 'shadow-md scale-105' : 'hover:scale-105'}`} aria-pressed={isSelected}>
-              <SentimentBadge sentiment={sentiment} size="sm" />
+        return <Button key={sentiment} variant={isSelected ? "default" : "outline"} size="sm" onClick={() => onToggle(sentiment)} className={`transition-all ${isSelected ? 'ring-2 ring-primary' : ''}`} aria-pressed={isSelected}>
+              {sentiment}
             </Button>;
       })}
       </div>

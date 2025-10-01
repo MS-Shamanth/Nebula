@@ -5,6 +5,7 @@ export type Language = "en" | "es" | "fr" | "de";
 
 interface AccessibilitySettings {
   themeMode: ThemeMode;
+  darkMode: boolean;
   language: Language;
   fontSize: number;
   screenReaderMode: boolean;
@@ -14,17 +15,20 @@ interface AccessibilitySettings {
 
 interface AccessibilityContextType {
   settings: AccessibilitySettings;
+  updateSettings: (updates: Partial<AccessibilitySettings>) => void;
   updateThemeMode: (mode: ThemeMode) => void;
   updateLanguage: (lang: Language) => void;
   updateFontSize: (size: number) => void;
   toggleScreenReaderMode: () => void;
   toggleReducedMotion: () => void;
   toggleEmotionColorTheme: () => void;
+  toggleDarkMode: () => void;
   resetSettings: () => void;
 }
 
 const defaultSettings: AccessibilitySettings = {
   themeMode: "default",
+  darkMode: false,
   language: "en",
   fontSize: 16,
   screenReaderMode: false,
@@ -43,6 +47,13 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     localStorage.setItem("accessibility-settings", JSON.stringify(settings));
     
+    // Apply dark mode
+    if (settings.darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    
     // Apply theme changes
     document.documentElement.setAttribute("data-accessibility-theme", settings.themeMode);
     document.documentElement.setAttribute("data-language", settings.language);
@@ -60,6 +71,10 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
       document.documentElement.classList.remove("emotion-color-theme");
     }
   }, [settings]);
+
+  const updateSettings = (updates: Partial<AccessibilitySettings>) => {
+    setSettings(prev => ({ ...prev, ...updates }));
+  };
 
   const updateThemeMode = (mode: ThemeMode) => {
     setSettings(prev => ({ ...prev, themeMode: mode }));
@@ -85,6 +100,10 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     setSettings(prev => ({ ...prev, emotionColorTheme: !prev.emotionColorTheme }));
   };
 
+  const toggleDarkMode = () => {
+    setSettings(prev => ({ ...prev, darkMode: !prev.darkMode }));
+  };
+
   const resetSettings = () => {
     setSettings(defaultSettings);
   };
@@ -93,12 +112,14 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     <AccessibilityContext.Provider
       value={{
         settings,
+        updateSettings,
         updateThemeMode,
         updateLanguage,
         updateFontSize,
         toggleScreenReaderMode,
         toggleReducedMotion,
         toggleEmotionColorTheme,
+        toggleDarkMode,
         resetSettings,
       }}
     >
