@@ -8,13 +8,13 @@ import { useState } from "react";
 const Collaborate = () => {
   const [activeTab, setActiveTab] = useState<"editor" | "versions" | "qa">("editor");
   return <div className="min-h-screen bg-gradient-hero">
-      <main className="container mx-auto px-4 py-12 space-y-8">
+      <main className="container mx-auto px-4 py-12 space-y-8 bg-slate-950">
         {/* Header */}
         <section className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-purple-600">
             Collaborative Workspace
           </h1>
-          <p className="text-lg max-w-2xl mx-auto text-zinc-950">
+          <p className="text-lg max-w-2xl mx-auto text-zinc-50">
             Create, edit, and verify knowledge together with real-time collaboration, 
             version history, and community feedback.
           </p>
