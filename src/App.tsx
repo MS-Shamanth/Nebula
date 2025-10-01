@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AccessibilityProvider } from "./contexts/AccessibilityContext";
 import { AccessibilityPanel } from "./components/AccessibilityPanel";
-import { ScrollToTop } from "./components/ScrollToTop";
 import { Navigation } from "./components/Navigation";
 import Home from "./pages/Home";
 import Browse from "./pages/Browse";
@@ -38,7 +37,6 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <ScrollToTop />
         </BrowserRouter>
       </TooltipProvider>
     </AccessibilityProvider>

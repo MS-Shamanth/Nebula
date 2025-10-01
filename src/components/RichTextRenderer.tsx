@@ -23,27 +23,21 @@ export const RichTextRenderer = ({ content }: RichTextRendererProps) => {
 
     // Handle text nodes
     if (node.type === 'text') {
-      let element: ReactNode = node.text || '';
+      let text = node.text || '';
       
       // Apply marks (bold, italic, etc.)
       if (node.marks) {
         node.marks.forEach((mark) => {
           if (mark.type === 'bold') {
-            element = <strong className="font-bold">{element}</strong>;
+            text = `**${text}**`;
           }
           if (mark.type === 'italic') {
-            element = <em className="italic">{element}</em>;
-          }
-          if (mark.type === 'underline') {
-            element = <u className="underline">{element}</u>;
-          }
-          if (mark.type === 'code') {
-            element = <code className="bg-muted px-1.5 py-0.5 rounded text-sm">{element}</code>;
+            text = `*${text}*`;
           }
         });
       }
       
-      return <span key={index}>{element}</span>;
+      return <span key={index}>{text}</span>;
     }
 
     // Handle paragraph

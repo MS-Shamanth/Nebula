@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { fetchArticleBySlug, StoryblokArticle, fetchArticles } from "@/lib/storyblok-client";
+import { fetchArticleBySlug, StoryblokArticle } from "@/lib/storyblok-client";
 import { SentimentBadge } from "@/components/SentimentBadge";
 import { RichTextRenderer } from "@/components/RichTextRenderer";
-import { ArticleRecommendations } from "@/components/ArticleRecommendations";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,12 +10,10 @@ import { Heart, ArrowLeft, Calendar, User, Volume2, VolumeX, Share2, Bookmark } 
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { useAccessibility } from "@/contexts/AccessibilityContext";
-import { Article } from "@/types/article";
 
 const ArticleDetail = () => {
   const { slug } = useParams();
   const [article, setArticle] = useState<StoryblokArticle | null>(null);
-  const [allArticles, setAllArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -29,31 +26,8 @@ const ArticleDetail = () => {
       
       try {
         setLoading(true);
-        const [articleData, articlesData] = await Promise.all([
-          fetchArticleBySlug(slug),
-          fetchArticles()
-        ]);
-        
-        setArticle(articleData);
-        
-        // Transform articles for recommendations
-        const transformed: Article[] = articlesData.map((story) => ({
-          id: story.slug,
-          title: story.content.headline || story.content.title || 'Untitled',
-          content: '',
-          excerpt: story.content.excerpt || story.content.description || '',
-          author: story.content.author || 'Anonymous',
-          publishedAt: new Date(story.published_at || story.created_at),
-          updatedAt: new Date(story.created_at),
-          sentiment: (story.content.sentiment || 'inspiring') as any,
-          tags: story.content.tags ? story.content.tags.split(',').map(t => t.trim()) : [],
-          readTime: story.content.read_time || 5,
-          views: Math.floor(Math.random() * 5000),
-          karma: Math.floor(Math.random() * 200),
-          imageUrl: story.content.image?.filename,
-        }));
-        
-        setAllArticles(transformed);
+        const data = await fetchArticleBySlug(slug);
+        setArticle(data);
       } catch (error) {
         console.error('Error fetching article:', error);
         toast.error('Failed to load article');
@@ -272,11 +246,6 @@ const ArticleDetail = () => {
                 )}
               </Button>
             </div>
-
-            <ArticleRecommendations 
-              currentArticleId={slug || ''} 
-              articles={allArticles} 
-            />
           </div>
         </article>
       </main>

@@ -124,35 +124,9 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     setSettings(prev => ({ ...prev, voiceLanguage: lang }));
   };
 
-  const readText = async (text: string) => {
+  const readText = (text: string) => {
     if (!settings.voiceReaderEnabled) return;
     
-    try {
-      // Try to use ElevenLabs TTS via edge function
-      const { supabase } = await import('@/integrations/supabase/client');
-      
-      const { data, error } = await supabase.functions.invoke('text-to-speech', {
-        body: { text, voiceLanguage: settings.voiceLanguage }
-      });
-
-      if (error) throw error;
-
-      if (data?.audioContent) {
-        // Play the audio
-        const audioBlob = base64ToBlob(data.audioContent, 'audio/mpeg');
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioUrl);
-        await audio.play();
-        
-        // Clean up
-        audio.onended = () => URL.revokeObjectURL(audioUrl);
-        return;
-      }
-    } catch (error) {
-      console.log('Using fallback TTS:', error);
-    }
-
-    // Fallback to Web Speech API
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = settings.voiceLanguage;
@@ -163,17 +137,6 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const stopReading = () => {
     window.speechSynthesis.cancel();
-  };
-
-  // Helper function to convert base64 to blob
-  const base64ToBlob = (base64: string, mimeType: string) => {
-    const byteCharacters = atob(base64);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: mimeType });
   };
 
   const resetSettings = () => {

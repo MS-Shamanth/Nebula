@@ -1,4 +1,4 @@
-export type SentimentType = 'joyful' | 'curious' | 'urgent' | 'calm' | 'inspiring' | 'analytical' | 'hopeful' | 'sad' | 'angry' | 'anxious' | 'grateful';
+export type SentimentType = 'joyful' | 'curious' | 'urgent' | 'calm' | 'inspiring' | 'analytical';
 
 export interface Article {
   id: string;
