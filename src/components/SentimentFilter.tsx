@@ -5,7 +5,7 @@ interface SentimentFilterProps {
   selectedSentiments: SentimentType[];
   onToggle: (sentiment: SentimentType) => void;
 }
-const allSentiments: SentimentType[] = ['joyful', 'curious', 'urgent', 'calm', 'inspiring', 'analytical'];
+const allSentiments: SentimentType[] = ['joyful', 'curious', 'urgent', 'calm', 'inspiring', 'analytical', 'hopeful', 'sad', 'angry', 'anxious', 'grateful'];
 export const SentimentFilter = ({
   selectedSentiments,
   onToggle

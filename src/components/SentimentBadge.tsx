@@ -12,6 +12,11 @@ const sentimentLabels: Record<SentimentType, string> = {
   calm: '🧘 Calm',
   inspiring: '✨ Inspiring',
   analytical: '📊 Analytical',
+  hopeful: '🌅 Hopeful',
+  sad: '😢 Sad',
+  angry: '😠 Angry',
+  anxious: '😰 Anxious',
+  grateful: '🙏 Grateful',
 };
 
 export const SentimentBadge = ({ sentiment, size = 'md' }: SentimentBadgeProps) => {

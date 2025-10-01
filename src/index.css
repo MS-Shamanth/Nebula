@@ -37,6 +37,11 @@ All colors MUST be HSL.
     --sentiment-calm: 180 40% 60%;
     --sentiment-inspiring: 280 70% 60%;
     --sentiment-analytical: 220 50% 55%;
+    --sentiment-hopeful: 30 90% 60%;
+    --sentiment-sad: 220 15% 50%;
+    --sentiment-angry: 0 75% 55%;
+    --sentiment-anxious: 40 60% 50%;
+    --sentiment-grateful: 150 60% 50%;
 
     /* Emotion Colors (for EventCard) */
     --emotion-joy: 45 100% 60%;
@@ -129,6 +134,11 @@ All colors MUST be HSL.
   .emotion-color-theme .sentiment-calm { background-color: hsl(var(--sentiment-calm) / 0.3) !important; }
   .emotion-color-theme .sentiment-inspiring { background-color: hsl(var(--sentiment-inspiring) / 0.3) !important; }
   .emotion-color-theme .sentiment-analytical { background-color: hsl(var(--sentiment-analytical) / 0.3) !important; }
+  .emotion-color-theme .sentiment-hopeful { background-color: hsl(var(--sentiment-hopeful) / 0.3) !important; }
+  .emotion-color-theme .sentiment-sad { background-color: hsl(var(--sentiment-sad) / 0.3) !important; }
+  .emotion-color-theme .sentiment-angry { background-color: hsl(var(--sentiment-angry) / 0.3) !important; }
+  .emotion-color-theme .sentiment-anxious { background-color: hsl(var(--sentiment-anxious) / 0.3) !important; }
+  .emotion-color-theme .sentiment-grateful { background-color: hsl(var(--sentiment-grateful) / 0.3) !important; }
 }
 
 @layer components {
@@ -181,6 +191,11 @@ All colors MUST be HSL.
   .sentiment-calm { @apply bg-sentiment-calm/10 text-sentiment-calm border border-sentiment-calm/30; }
   .sentiment-inspiring { @apply bg-sentiment-inspiring/10 text-sentiment-inspiring border border-sentiment-inspiring/30; }
   .sentiment-analytical { @apply bg-sentiment-analytical/10 text-sentiment-analytical border border-sentiment-analytical/30; }
+  .sentiment-hopeful { @apply bg-sentiment-hopeful/10 text-sentiment-hopeful border border-sentiment-hopeful/30; }
+  .sentiment-sad { @apply bg-sentiment-sad/10 text-sentiment-sad border border-sentiment-sad/30; }
+  .sentiment-angry { @apply bg-sentiment-angry/10 text-sentiment-angry border border-sentiment-angry/30; }
+  .sentiment-anxious { @apply bg-sentiment-anxious/10 text-sentiment-anxious border border-sentiment-anxious/30; }
+  .sentiment-grateful { @apply bg-sentiment-grateful/10 text-sentiment-grateful border border-sentiment-grateful/30; }
 
   /* Emotion Badge Styles */
   .emotion-badge {

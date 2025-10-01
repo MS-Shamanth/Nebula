@@ -39,7 +39,101 @@ const Browse = () => {
         imageUrl: story.content.image?.filename,
       }));
 
-      setArticles(transformedArticles);
+      // Add more diverse sample articles with different sentiments
+      const sampleArticles: Article[] = [
+        {
+          id: 'overcoming-burnout',
+          title: 'Rising from Burnout: My Journey to Recovery',
+          content: 'After years of pushing myself to the limit, I hit rock bottom. This is my story of recognizing burnout, seeking help, and finding my way back.',
+          excerpt: 'A personal account of recognizing and recovering from professional burnout.',
+          author: 'Sarah Chen',
+          publishedAt: new Date('2025-09-28'),
+          updatedAt: new Date('2025-09-28'),
+          sentiment: 'hopeful',
+          tags: ['mental health', 'burnout', 'recovery', 'self-care'],
+          readTime: 8,
+          views: 3420,
+          karma: 187,
+          imageUrl: 'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=800'
+        },
+        {
+          id: 'loss-of-parent',
+          title: 'Navigating Life After Losing My Father',
+          content: 'Grief is not linear. This is what I learned during the hardest year of my life.',
+          excerpt: 'A heartfelt reflection on coping with loss and finding meaning in memories.',
+          author: 'Michael Torres',
+          publishedAt: new Date('2025-09-25'),
+          updatedAt: new Date('2025-09-25'),
+          sentiment: 'sad',
+          tags: ['grief', 'loss', 'family', 'healing'],
+          readTime: 10,
+          views: 2890,
+          karma: 234,
+          imageUrl: 'https://images.unsplash.com/photo-1516733968668-dbdce39c4651?w=800'
+        },
+        {
+          id: 'finding-joy-small-moments',
+          title: 'The Art of Finding Joy in Small Moments',
+          content: 'Happiness is not always found in grand achievements. Sometimes, it is in the smallest, quietest moments that we find the most profound joy.',
+          excerpt: 'Discovering that happiness lives in the everyday moments we often overlook.',
+          author: 'Emma Rodriguez',
+          publishedAt: new Date('2025-09-22'),
+          updatedAt: new Date('2025-09-22'),
+          sentiment: 'joyful',
+          tags: ['happiness', 'mindfulness', 'gratitude', 'daily life'],
+          readTime: 6,
+          views: 4120,
+          karma: 312,
+          imageUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800'
+        },
+        {
+          id: 'workplace-discrimination',
+          title: 'Speaking Up: My Experience with Workplace Bias',
+          content: 'I stayed silent for too long. Here is why I finally decided to speak up about discrimination at work.',
+          excerpt: 'An honest account of facing workplace discrimination and choosing to advocate for change.',
+          author: 'James Patterson',
+          publishedAt: new Date('2025-09-20'),
+          updatedAt: new Date('2025-09-20'),
+          sentiment: 'angry',
+          tags: ['workplace', 'discrimination', 'advocacy', 'justice'],
+          readTime: 9,
+          views: 5240,
+          karma: 278,
+          imageUrl: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800'
+        },
+        {
+          id: 'anxiety-medication-journey',
+          title: 'My Journey with Anxiety Medication: The Ups and Downs',
+          content: 'Deciding to start medication for anxiety was one of the hardest decisions of my life. Here is what I have learned along the way.',
+          excerpt: 'An open discussion about navigating anxiety treatment and finding what works.',
+          author: 'Priya Sharma',
+          publishedAt: new Date('2025-09-18'),
+          updatedAt: new Date('2025-09-18'),
+          sentiment: 'anxious',
+          tags: ['anxiety', 'mental health', 'medication', 'treatment'],
+          readTime: 12,
+          views: 6780,
+          karma: 421,
+          imageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800'
+        },
+        {
+          id: 'gratitude-cancer-survivor',
+          title: 'Grateful for Every Day: Reflections from a Cancer Survivor',
+          content: 'Beating cancer changed everything. Now, I see life through a lens of profound gratitude.',
+          excerpt: 'How surviving cancer transformed my perspective and taught me to cherish each moment.',
+          author: 'David Kim',
+          publishedAt: new Date('2025-09-15'),
+          updatedAt: new Date('2025-09-15'),
+          sentiment: 'grateful',
+          tags: ['cancer', 'survival', 'gratitude', 'health'],
+          readTime: 11,
+          views: 8920,
+          karma: 567,
+          imageUrl: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800'
+        }
+      ];
+
+      setArticles([...transformedArticles, ...sampleArticles]);
       setLoading(false);
     };
 
