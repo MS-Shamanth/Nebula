@@ -25,7 +25,7 @@ export const KarmaLeaderboard = ({
     }
   };
   return <Card className="p-6 bg-gradient-card bg-black">
-      <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-zinc-950">
+      <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-zinc-50">
         <Trophy className="w-6 h-6 text-primary" />
         Karma Leaderboard
       </h3>
