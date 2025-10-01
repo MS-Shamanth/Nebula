@@ -57,7 +57,9 @@ export async function fetchArticles(): Promise<StoryblokArticle[]> {
 
 export async function fetchArticleBySlug(slug: string): Promise<StoryblokArticle | null> {
   try {
-    const response = await storyblokClient.get(`cdn/stories/${slug}`, {
+    // Always prepend 'articles/' to match Storyblok folder structure
+    const fullSlug = `articles/${slug}`;
+    const response = await storyblokClient.get(`cdn/stories/${fullSlug}`, {
       version: 'published'
     });
     return response.data.story;
